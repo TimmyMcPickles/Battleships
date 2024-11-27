@@ -86,4 +86,5 @@ Battleships/
 Contributions are welcome! Please feel free to submit a pull request.
 
 ## License
-(LICENSE.md)
+
+This project is licensed under the zlib/libpng license, the same license as Raylib. For more details, see the [LICENSE](LICENSE) file in the project repository.
