@@ -60,8 +60,8 @@ make
 
   <summary>Version specific instructions</summary>
 
-  ### Building on Different Platforms:1. **Linux:**
-
+  ### Building on Different Platforms:
+  1.**Linux:**
 
   # Install dependencies
   ```bash
