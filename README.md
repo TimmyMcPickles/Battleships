@@ -81,7 +81,6 @@ Battleships/
 ![Gameplay](assets/game.png) <!-- You'll need to add this -->
 ![Victory Screen](assets/victory.png) <!-- You'll need to add this -->
 ![Game Over Screen](assets/game_over.png)
-![INTENSE NAVAL COMBAT!!!](assets/Lost.webm)
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a pull request.
