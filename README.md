@@ -58,7 +58,6 @@ make
 ./Battleships.app # On MacOS
 ```
 
-<details>
   <summary>Version specific instructions</summary>
 
   ### Building on Different Platforms:1. **Linux:**
@@ -124,7 +123,6 @@ make
   - Platform-specific compiler flags and definitions
   - Different ways of handling paths and file system operations
 
-<details>
 
 ## How to Play
 
