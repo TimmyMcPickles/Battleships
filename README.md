@@ -33,15 +33,20 @@ git clone https://github.com/yourusername/Battleships.git
 cd Battleships
 ```
 
-2. Create and enter build directory:
-```bash
-mkdir build
-cd build
-```
-
-3. Generate build files and compile:
+2. Generate build files and compile:
 ```bash
 cmake -B build
+```
+3. Enter Build Directory and run make
+```bash
+make
+```
+
+4. Run the game:
+```bash
+./Battleships # On Linux
+./Battleships.exe # On Windows
+./Battleships.app # On MacOS
 ```
 
 ## How to Play
