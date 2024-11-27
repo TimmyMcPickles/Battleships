@@ -123,8 +123,8 @@ make
   - Different linking requirements
   - Platform-specific compiler flags and definitions
   - Different ways of handling paths and file system operations
-<details>
 
+<details>
 
 ## How to Play
 
