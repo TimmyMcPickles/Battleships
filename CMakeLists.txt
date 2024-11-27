@@ -3,46 +3,102 @@ project(Battleship CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Export compile commands
+# Export compile commands for tooling
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Adding Raylib
+# Platform-specific configurations
+if(WIN32)
+    # Windows-specific settings
+    set(USE_WINMM ON CACHE BOOL "" FORCE)
+    set(USE_EXTERNAL_GLFW OFF CACHE BOOL "" FORCE)
+    add_definitions(-D_WIN32)
+    add_definitions(-DPLATFORM_DESKTOP)
+elseif(APPLE)
+    # macOS-specific settings
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment version")
+    add_definitions(-DPLATFORM_DESKTOP)
+    # Ensure macOS finds the correct OpenGL
+    find_package(OpenGL REQUIRED)
+elseif(UNIX AND NOT APPLE)
+    # Linux-specific settings
+    add_definitions(-DPLATFORM_DESKTOP)
+    # Linux dependencies
+    find_package(X11 REQUIRED)
+    if(NOT X11_FOUND)
+        message(FATAL_ERROR "X11 development packages not found")
+    endif()
+endif()
+
+# Raylib configuration options
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
+set(OPENGL_VERSION "3.3" CACHE STRING "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+# Fetch and configure Raylib
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
-set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-set(BUILD_GAMES    OFF CACHE BOOL "" FORCE) # don't build the supplied example games
-
 FetchContent_Declare(
-        raylib
-        GIT_REPOSITORY "https://github.com/raysan5/raylib.git"
-        GIT_TAG "master"
-        GIT_PROGRESS TRUE
-    )
-
+    raylib
+    GIT_REPOSITORY https://github.com/raysan5/raylib.git
+    GIT_TAG 4.5.0
+)
 FetchContent_MakeAvailable(raylib)
 
-# Adding our source files
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/sources/*.cpp") # Define PROJECT_SOURCES as a list of all source files
-set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/sources/") # Define PROJECT_INCLUDE to be the path to the include directory of the project
-set(HEADERS_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/headers/") # Define HEADERS_INCLUDE to be the path to the headers directory of the project
+# Project source files
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/sources/*.cpp")
+set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/sources/")
+set(HEADERS_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/headers/")
 
-# Declaring our executable
-add_executable(${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE} ${HEADERS_INCLUDE})
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
-
-# Setting ASSETS_PATH
-target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/") # Set the asset path macro to the absolute path on the dev machine
-#target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/") # Set the asset path macro in release mode to a relative path that assumes the assets folder is in the same directory as the game executable
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
-
-# Setting ASSETS_PATH
-target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-
-# Debug output to verify sources
-message(STATUS "Source files: ${PROJECT_SOURCES}")
-
+# Create executable with platform-specific settings
 if(WIN32)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+    add_executable(${PROJECT_NAME} WIN32 ${PROJECT_SOURCES})
+else()
+    add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 endif()
+
+# Include directories
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${PROJECT_INCLUDE}
+    ${HEADERS_INCLUDE}
+    ${raylib_SOURCE_DIR}/src
+)
+
+# Platform-specific linking
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE raylib winmm)
+    if(MSVC)
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+    else()
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mconsole")
+    endif()
+elseif(APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        raylib
+        ${OPENGL_LIBRARIES}
+        "-framework IOKit"
+        "-framework Cocoa"
+        "-framework OpenGL"
+    )
+else() # Linux
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        raylib
+        m
+        pthread
+        dl
+        rt
+        X11
+    )
+endif()
+
+# Asset path definition
+if(WIN32)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+endif()
+
+# Debug output
+message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Source files: ${PROJECT_SOURCES}")
