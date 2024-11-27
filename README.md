@@ -87,4 +87,4 @@ Contributions are welcome! Please feel free to submit a pull request.
 
 ## License
 Will be updated soon.
-[Add your license information here]
+[LICENSE]
