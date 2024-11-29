@@ -46,11 +46,11 @@ void Grid::PlaceBattleships() {
         tiles[index].SetBattleship(&battleships.back());
     }
 
-    std::cout << "Battleships placed: " << battleships.size() << std::endl;
+    //std::cout << "Battleships placed: " << battleships.size() << std::endl;
 }
 
 void Grid::Draw() const {
-    std::cout << "Drawing grid with " << tiles.size() << " tiles" << std::endl;
+    //std::cout << "Drawing grid with " << tiles.size() << " tiles" << std::endl;
     for (const auto& tile : tiles) {
         tile.Draw();
     }
