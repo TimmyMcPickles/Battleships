@@ -9,11 +9,11 @@ public:
     void Draw() const;
     void Update(Vector2 mousePosition);
     bool IsTileClicked(Vector2 mousePosition);
-    bool IsBattleshipClicked(Vector2 mousePosition); // Check if a battleship was clicked
+    bool IsBattleshipClicked(Vector2 mousePosition);
 
 private:
     std::vector<Tile> tiles;
-    std::vector<Battleship> battleships; // Vector to store battleships
+    std::vector<Battleship> battleships;
     int rows;
     int cols;
     void PlaceBattleships();

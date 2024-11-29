@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "raylib.h"
 
-Game::Game() : rounds(15), foundBattleships(0), grid(5, 5), gameWon(false), gameLost(false) {
+Game::Game() : rounds(25), foundBattleships(0), grid(5, 5), gameWon(false), gameLost(false) {
     InitWindow(800, 800, "Battleship");
     SetTargetFPS(60);
 }
@@ -52,9 +52,13 @@ void Game::Draw() {
     grid.Draw();
 
     if (gameWon) {
+        DrawText("You Win!", 301, 401, 70, BLACK);
+        DrawText("You Win!", 299, 399, 70, BLACK);
         DrawText("You Win!", 300, 400, 70, GREEN);
     }else if (gameLost){
-        DrawText("Game Over!",300, 400, 70, RED);
+        DrawText("Game Over!", 301, 401, 70, BLACK);
+        DrawText("Game Over!", 299, 399, 70, BLACK);
+        DrawText("Game Over!", 300, 400, 70, MAROON);
     }
 
     EndDrawing();

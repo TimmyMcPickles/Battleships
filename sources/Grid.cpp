@@ -21,7 +21,7 @@ Grid::Grid(int rows, int cols) : rows(rows), cols(cols) {
     PlaceBattleships();
 
     // Debug output
-    std::cout << "Total tiles created: " << tiles.size() << std::endl;
+    //std::cout << "Total tiles created: " << tiles.size() << std::endl;
 }
 
 void Grid::PlaceBattleships() {
